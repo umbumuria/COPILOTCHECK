@@ -3,42 +3,68 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Uji Mental Co-Pilot - Worst Case Simulation</title>
+<title>Uji Mental Co-Pilot</title>
+
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        background: #111;
-        color: #fff;
-        padding: 30px;
-    }
-    h1 {
-        text-align: center;
-        color: #00ff99;
-    }
-    .question {
-        margin-bottom: 25px;
-        padding: 15px;
-        background: #1c1c1c;
-        border-radius: 8px;
-    }
-    button {
-        padding: 12px 20px;
-        background: #00ff99;
-        border: none;
-        font-weight: bold;
-        cursor: pointer;
-        border-radius: 5px;
-    }
-    #result {
-        margin-top: 30px;
-        padding: 20px;
-        border-radius: 8px;
-        font-size: 18px;
-        font-weight: bold;
-    }
+body {
+    font-family: Arial, sans-serif;
+    background: #111;
+    color: white;
+    padding: 30px;
+}
+
+h1 { text-align:center; color:#00ff99; }
+
+.container { max-width:800px; margin:auto; }
+
+.question {
+    margin-bottom:20px;
+    padding:15px;
+    background:#1c1c1c;
+    border-radius:8px;
+}
+
+button {
+    padding:10px 20px;
+    background:#00ff99;
+    border:none;
+    font-weight:bold;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+#result {
+    margin-top:30px;
+    padding:20px;
+    border-radius:8px;
+    font-weight:bold;
+}
+
+#protectedContent { display:none; }
+#loginBox {
+    max-width:400px;
+    margin:100px auto;
+    text-align:center;
+}
+input[type="password"] {
+    padding:10px;
+    width:80%;
+    margin-bottom:10px;
+}
 </style>
 </head>
 <body>
+
+<div id="loginBox">
+    <h1>Private Access</h1>
+    <p>Masukkan Password untuk mengakses simulasi.</p>
+    <input type="password" id="passwordInput" placeholder="Password">
+    <br>
+    <button onclick="checkPassword()">Masuk</button>
+    <p id="loginError" style="color:red;"></p>
+</div>
+
+<div id="protectedContent" class="container">
 
 <h1>Checklist Uji Mental Co-Pilot</h1>
 <p>Simulasi kondisi minus 50% pada modal bersama.</p>
@@ -49,44 +75,60 @@
 <p>1. Saat melihat akun minus 50%, reaksi pertama saya adalah:</p>
 <label><input type="radio" name="q1" value="3"> Tetap tenang dan rasional</label><br>
 <label><input type="radio" name="q1" value="2"> Tidak nyaman tapi masih berpikir jernih</label><br>
-<label><input type="radio" name="q1" value="1"> Panik dan ingin segera menghentikan</label>
+<label><input type="radio" name="q1" value="1"> Panik dan ingin menghentikan</label>
 </div>
 
 <div class="question">
 <p>2. Apakah saya masih percaya project ini bisa berhasil dalam 1 tahun?</p>
 <label><input type="radio" name="q2" value="3"> Ya, tetap percaya</label><br>
-<label><input type="radio" name="q2" value="2"> Ragu, tapi masih ingin lanjut</label><br>
+<label><input type="radio" name="q2" value="2"> Ragu tapi masih lanjut</label><br>
 <label><input type="radio" name="q2" value="1"> Tidak yakin lagi</label>
 </div>
 
 <div class="question">
-<p>3. Jika kondisi ini nyata (bukan simulasi), saya akan:</p>
-<label><input type="radio" name="q3" value="3"> Evaluasi sesuai plan dan tetap disiplin</label><br>
-<label><input type="radio" name="q3" value="2"> Minta diskusi ulang sebelum lanjut</label><br>
-<label><input type="radio" name="q3" value="1"> Meminta menghentikan project</label>
+<p>3. Jika kondisi ini nyata, saya akan:</p>
+<label><input type="radio" name="q3" value="3"> Evaluasi dan tetap disiplin</label><br>
+<label><input type="radio" name="q3" value="2"> Diskusi ulang sebelum lanjut</label><br>
+<label><input type="radio" name="q3" value="1"> Menghentikan project</label>
 </div>
 
 <div class="question">
 <p>4. Saat pilot entry tanpa sepengetahuan saya dan minus 50%, saya:</p>
-<label><input type="radio" name="q4" value="3"> Fokus evaluasi sistem, bukan emosi</label><br>
-<label><input type="radio" name="q4" value="2"> Terganggu tapi masih objektif</label><br>
+<label><input type="radio" name="q4" value="3"> Fokus evaluasi sistem</label><br>
+<label><input type="radio" name="q4" value="2"> Terganggu tapi objektif</label><br>
 <label><input type="radio" name="q4" value="1"> Kehilangan kepercayaan</label>
 </div>
 
 <div class="question">
-<p>5. Dalam kondisi worst case seperti ini, peran co-pilot seharusnya:</p>
-<label><input type="radio" name="q5" value="3"> Menjaga governance & stabilitas</label><br>
+<p>5. Dalam kondisi worst case, peran co-pilot seharusnya:</p>
+<label><input type="radio" name="q5" value="3"> Menjaga stabilitas & governance</label><br>
 <label><input type="radio" name="q5" value="2"> Mengambil alih sementara</label><br>
 <label><input type="radio" name="q5" value="1"> Menghentikan sistem</label>
 </div>
 
-<button type="button" onclick="calculateResult()">Submit Jawaban</button>
-
+<button type="button" onclick="calculateResult()">Submit</button>
 </form>
 
 <div id="result"></div>
 
+</div>
+
 <script>
+
+// ===== PASSWORD SETTING =====
+const correctPassword = "copilot2026"; 
+// Ganti password di atas sesuai keinginan
+
+function checkPassword() {
+    const input = document.getElementById("passwordInput").value;
+    if (input === correctPassword) {
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("protectedContent").style.display = "block";
+    } else {
+        document.getElementById("loginError").innerText = "Password salah.";
+    }
+}
+
 function calculateResult() {
     let total = 0;
     let questions = ["q1","q2","q3","q4","q5"];
@@ -104,15 +146,16 @@ function calculateResult() {
 
     if (total >= 13) {
         resultDiv.style.background = "#003322";
-        resultDiv.innerHTML = "KESIMPULAN: Mental Stabil & Siap Jangka Panjang ✔️<br>Co-Pilot mampu bertahan dalam tekanan worst case dan tetap rasional terhadap project.";
+        resultDiv.innerHTML = "KESIMPULAN: Mental Stabil & Siap Jangka Panjang ✔️";
     } else if (total >= 9) {
         resultDiv.style.background = "#332900";
-        resultDiv.innerHTML = "KESIMPULAN: Mental Cukup Stabil ⚠️<br>Ada keraguan, namun masih bisa dibangun dengan komunikasi & governance yang lebih jelas.";
+        resultDiv.innerHTML = "KESIMPULAN: Cukup Stabil namun perlu penguatan governance ⚠️";
     } else {
         resultDiv.style.background = "#330000";
-        resultDiv.innerHTML = "KESIMPULAN: Mental Belum Siap ❌<br>Project berisiko terganggu saat drawdown besar terjadi. Perlu diskusi ulang mengenai ekspektasi & risk tolerance.";
+        resultDiv.innerHTML = "KESIMPULAN: Belum Siap Menghadapi Worst Case ❌";
     }
 }
+
 </script>
 
 </body>
